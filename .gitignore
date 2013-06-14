@@ -1,0 +1,15 @@
+/META.*
+/MYMETA.*
+/Makefile
+/Makefile.old
+/MANIFEST
+/MANIFEST.bak
+/MANIFEST.SKIP
+/blib/
+/Distar/
+/pm_to_blib
+/.build
+cover_db
+nytprof*
+/inc/
+/MooX-Declare-*
