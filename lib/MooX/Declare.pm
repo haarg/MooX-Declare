@@ -1,17 +1,45 @@
 package MooX::Declare;
-use strict;
-use warnings;
-# ABSTRACT: A new module
+use strictures 1;
 
 our $VERSION = '0.000001';
 $VERSION = eval $VERSION;
+
+use Role::Tiny::With;
+with 'MooX::Declare::Filter';
+
+sub filters {
+  (
+    class => sub {
+      my ($keyword, $parser) = @_;
+      if (my ($stripped, $matches) = $parser->match_source('', '{')) {
+        my $name = $parser->current_match->[0];
+        $stripped =~ s/{/; { package ${name}; use Moo; use MooX::Declare::Class;/;
+        return ($stripped, 1);
+      }
+      else {
+        return ('', 1);
+      }
+    },
+    role => sub {
+      my ($keyword, $parser) = @_;
+      if (my ($stripped, $matches) = $parser->match_source('', '{')) {
+        my $name = $parser->current_match->[0];
+        $stripped =~ s/{/; { package ${name}; use Moo::Role; use MooX::Declare::Role;/;
+        return ($stripped, 1);
+      }
+      else {
+        return ('', 1);
+      }
+    },
+  )
+}
 
 1;
 __END__
 
 =head1 NAME
 
-MooX::Declare - A new module
+MooX::Declare - Declarative syntax for Moo
 
 =head1 SYNOPSIS
 
@@ -19,7 +47,7 @@ MooX::Declare - A new module
 
 =head1 DESCRIPTION
 
-A new module.
+Declarative syntax for Moo.
 
 =head1 AUTHOR
 
