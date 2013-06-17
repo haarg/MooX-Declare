@@ -1,4 +1,3 @@
-
 use strict;
 use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
@@ -10,9 +9,14 @@ my %WriteMakefileArgs = (
   VERSION_FROM => 'lib/MooX/Declare.pm',
 
   PREREQ_PM => {
+    'Filter::Keyword' => 0,
+    'Type::Tiny' => 0.007_07,
+    'namespace::clean' => 0,
+    'Package::Variant' => 0,
   },
   TEST_REQUIRES => {
     'Test::More' => 0.94,
+    'Test::Fatal' => 0,
   },
   MIN_PERL_VERSION => '5.8.1',
 
