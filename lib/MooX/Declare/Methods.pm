@@ -23,7 +23,7 @@ sub make_variant {
     my $self = shift;
     (
       $self->$orig,
-      map { $_ => $self->param_filter($filters{$_}) } @methods,
+      ( map { $_ => $self->param_filter($filters{$_}) } @methods ),
     )
   };
 }
