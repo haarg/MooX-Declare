@@ -23,7 +23,7 @@ sub param_filter {
   };
 }
 
-my $param_re = qr/([^,()]*?)\s*(:?)(\$[a-zA-Z_]\w*)/;
+my $param_re = qr/([^()]*?\s)\s*(:?)(\$[a-zA-Z_]\w*)/;
 
 our @PARAM_CHECK;
 
@@ -33,7 +33,7 @@ sub parse_signature {
 
   my @params;
   my @types;
-  while ($params =~ s/^\s*$param_re\s*(?:,|$)//) {
+  while ($params =~ /\G\s*$param_re\s*(?:,|$)/gc) {
     my ($type, $optional, $param) = ($1, $2, $3);
     my $type_object = $type ? $registry->lookup($type) : Any;
     if (!defined $type_object) {
@@ -46,7 +46,7 @@ sub parse_signature {
     push @types, $type_object;
   }
 
-  if ($params ne '') {
+  if (pos $params != length $params) {
     die "invalid parameter string '$params'";
   }
 
