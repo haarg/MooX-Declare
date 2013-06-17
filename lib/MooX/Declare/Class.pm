@@ -1,10 +1,7 @@
 package MooX::Declare::Class;
-use strictures 1;
+use Moo;
+use MooX::Declare::Methods;
 
-our $VERSION = '0.000001';
-$VERSION = eval $VERSION;
-
-use Role::Tiny::With;
-with 'MooX::Declare::Filter', 'MooX::Declare::Methods';
+with 'MooX::Declare::Filter', Methods(qw(method around before after override));
 
 1;

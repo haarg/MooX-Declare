@@ -4,32 +4,24 @@ use strictures 1;
 our $VERSION = '0.000001';
 $VERSION = eval $VERSION;
 
-use Role::Tiny::With;
+use Moo;
 with 'MooX::Declare::Filter';
 
 sub filters {
   (
-    class => sub {
-      my ($keyword, $parser) = @_;
-      if (my ($stripped, $matches) = $parser->match_source('', '{')) {
-        my $name = $parser->current_match->[0];
-        $stripped =~ s/{/; { package ${name}; use Moo; use MooX::Declare::Class;/;
-        return ($stripped, 1);
-      }
-      else {
-        return ('', 1);
-      }
+    class => {
+      match => qr/\{/,
+      pattern =>
+        ';{package %s;'
+        .'use Moo;'
+        .'use MooX::Declare::Class;',
     },
-    role => sub {
-      my ($keyword, $parser) = @_;
-      if (my ($stripped, $matches) = $parser->match_source('', '{')) {
-        my $name = $parser->current_match->[0];
-        $stripped =~ s/{/; { package ${name}; use Moo::Role; use MooX::Declare::Role;/;
-        return ($stripped, 1);
-      }
-      else {
-        return ('', 1);
-      }
+    role => {
+      match => qr/\{/,
+      pattern =>
+        ';{package %s;'
+        .'use Moo::Role;'
+        .'use MooX::Declare::Role;',
     },
   )
 }
