@@ -5,7 +5,7 @@ use Package::Variant
   subs => [ qw(around with) ],
 ;
 
-my $add_semi = "BEGIN { Filter::Keywords::inject_after_scope(';') }";
+my $add_semi = "BEGIN { Filter::Keyword::inject_after_scope(';') }";
 
 my %filters = (
   method => '; sub %s { my $self = shift; ',

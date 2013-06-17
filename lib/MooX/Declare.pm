@@ -8,6 +8,7 @@ use Type::Registry;
 use Moo;
 with 'MooX::Declare::Filter';
 
+#TODO: with, extends
 sub filters {
   (
     class => {
