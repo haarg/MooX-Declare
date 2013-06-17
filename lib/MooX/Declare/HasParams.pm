@@ -1,6 +1,7 @@
 package MooX::Declare::HasParams;
 use Types::Standard qw(Any Optional);
 use Type::Params;
+use Type::Registry;
 use Moo::Role;
 
 sub param_filter {
@@ -28,37 +29,33 @@ our @PARAM_CHECK;
 
 sub parse_signature {
   my ($self, $params) = @_;
+  my $registry = Type::Registry->for_class($self->target);
+
   my @params;
   my @types;
   while ($params =~ s/^\s*$param_re\s*(?:,|$)//) {
     my ($type, $optional, $param) = ($1, $2, $3);
-    my $type_object = $type ? do {
-      $type =~ s/\s+$//;
-      my $t;
-      eval qq{ package @{[ $self->target ]}; \$t = $type }
-        or die $@;
-      $t;
-    } : Any;
+    my $type_object = $type ? $registry->lookup($type) : Any;
+    if (!defined $type_object) {
+      die "invalid type $type";
+    }
     if ($optional) {
       $type_object = Optional[$type_object];
     }
     push @params, $param;
     push @types, $type_object;
   }
+
   if ($params ne '') {
     die "invalid parameter string '$params'";
   }
-  if (@types) {
-    my $assign = 'my (' . join(', ', @params) . ') = ';
-#    if (!grep { !( $_->library && $_->name && $_->library eq 'Types::Standard' && $_->name eq 'Any' ) } @types) {
-#      return $assign . '@_;';
-#    }
-#    else {
-      push @PARAM_CHECK, Type::Params::compile(@types);
-      return $assign . '$' . __PACKAGE__ . "::PARAM_CHECK[$#PARAM_CHECK]->(\@_);";
-#    }
+
+  my $assign = '';
+  if (@params) {
+    $assign = 'my (' . join(', ', @params) . ') = ';
   }
-  return;
+  push @PARAM_CHECK, Type::Params::compile(@types);
+  return $assign . '$' . __PACKAGE__ . "::PARAM_CHECK[$#PARAM_CHECK]->(\@_);";
 }
 
 1;

@@ -4,6 +4,7 @@ use strictures 1;
 our $VERSION = '0.000001';
 $VERSION = eval $VERSION;
 
+use Type::Registry;
 use Moo;
 with 'MooX::Declare::Filter';
 
@@ -14,6 +15,7 @@ sub filters {
       pattern =>
         ';{package %s;'
         .'use Moo;'
+        .'BEGIN { Type::Registry->for_me->add_types(-Standard) }'
         .'use MooX::Declare::Class;',
     },
     role => {
@@ -21,6 +23,7 @@ sub filters {
       pattern =>
         ';{package %s;'
         .'use Moo::Role;'
+        .'BEGIN { Type::Registry->for_me->add_types(-Standard) }'
         .'use MooX::Declare::Role;',
     },
   )
