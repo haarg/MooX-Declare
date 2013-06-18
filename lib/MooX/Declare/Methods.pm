@@ -10,8 +10,8 @@ my $add_semi = "BEGIN { Filter::Keyword::inject_after_scope(';') }";
 my %filters = (
   method => '; sub %s { my $self = shift; ',
   around =>
-    ";__around %s => sub { $add_semi my \$orig = shift; my \$self = shift; ",
-  map { $_ => ";__$_ %s => sub { $add_semi my \$self = shift; " }
+    ";around %s => sub { $add_semi my \$orig = shift; my \$self = shift; ",
+  map { $_ => ";$_ %s => sub { $add_semi my \$self = shift; " }
     qw(before after override),
 );
 

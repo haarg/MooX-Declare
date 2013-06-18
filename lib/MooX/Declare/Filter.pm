@@ -19,7 +19,7 @@ sub import {
       $parser = sub {
         my ($keyword, $kwp) = @_;
         if (my ($stripped, $matches) = $kwp->match_source(@match)) {
-          my $name = $kwp->current_match->[0];
+          my $name = $kwp->current_match;
           if ($pattern) {
             $stripped =~ s/$match[1]/sprintf($pattern, $name)/e;
             return ($stripped, 1);
